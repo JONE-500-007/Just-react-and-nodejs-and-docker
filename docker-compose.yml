@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # Backend Node.js
+  backend:
+    container_name: node-backend
+    image: node:20
+    working_dir: /app
+    volumes:
+      - ./node:/app
+    ports:
+      - "3000:3000"
+    command: sh -c "npm install && npm start"
+    depends_on:
+      - db
+
+  # Frontend React
+  frontend:
+    container_name: react-frontend
+    image: node:20
+    working_dir: /app
+    volumes:
+      - ./react:/app
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev"
+    depends_on:
+      - backend
+
+  # Database PostgreSQL
+  db:
+    container_name: postgres-db
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: justthisuser
+      POSTGRES_PASSWORD: mysqlpass1122
+      POSTGRES_DB: my_database
+    ports:
+      - "5432:5432"
+    volumes:
+      - D:/DataDocker/postgres:/var/lib/postgresql/data
+
+  # pgAdmin
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - "8000:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@test.com
+      PGADMIN_DEFAULT_PASSWORD: adminpassword
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
