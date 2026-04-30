@@ -1,0 +1,300 @@
+import React, { useState } from 'react';
+import { 
+  LayoutDashboard, 
+  ClipboardList, 
+  Calendar, 
+  Users, 
+  User, 
+  Bell, 
+  CheckCircle2, 
+  Clock, 
+  ChevronDown,
+  AlertCircle,
+  Circle
+} from 'lucide-react';
+
+const App = () => {
+  const [activeTab, setActiveTab] = useState('หน้าหลัก');
+  const [isCheckedIn, setIsCheckedIn] = useState(true);
+
+  // การจัดการ State สำหรับรายการงาน
+  const [tasks, setTasks] = useState([
+    { id: 1, name: "ออกแบบ UI หน้า Login", due: "3 พ.ค.", status: "prog", priority: "สำคัญ" },
+    { id: 2, name: "เขียน unit test ระบบ auth", due: "1 พ.ค.", status: "overdue", priority: "สำคัญ" },
+    { id: 3, name: "เขียน component สำหรับ form validation", due: "6 พ.ค.", status: "prog", priority: "ปานกลาง" },
+    { id: 4, name: "ทำ wireframe หน้า Register", due: "เสร็จแล้ว", status: "done", priority: "ทั่วไป" },
+  ]);
+
+  // ฟังก์ชันสำหรับการคลิกสลับสถานะงาน
+  const toggleTask = (id) => {
+    setTasks(prevTasks => 
+      prevTasks.map(task => 
+        task.id === id 
+          ? { ...task, status: task.status === 'done' ? 'prog' : 'done' } 
+          : task
+      )
+    );
+  };
+
+  const teammates = [
+    { id: 1, name: "สวิตต์ วานิช", role: "Head", online: true, initial: "สว" },
+    { id: 2, name: "วิชัย ทองดี", role: "Employee", online: true, initial: "วท" },
+    { id: 3, name: "ประสิทธิ์ มั่นคง", role: "Employee", online: true, initial: "ปม" },
+    { id: 4, name: "นภา รักเรียน", role: "Employee", online: false, initial: "นร" },
+  ];
+
+  return (
+    <div className="flex min-h-screen bg-[#0F1117] text-[#E2E8F0] font-sans selection:bg-blue-500/30">
+      {/* SIDEBAR */}
+      <aside className="w-64 bg-[#161B26] border-r border-white/5 flex flex-col">
+        <div className="p-8">
+          <div className="flex items-center gap-3 mb-1">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-600/20">
+              <LayoutDashboard size={18} className="text-white" />
+            </div>
+            <span className="text-lg font-bold tracking-tight text-white">WorkSpace</span>
+          </div>
+          <p className="text-xs text-slate-500 ml-11">Employee Portal</p>
+        </div>
+
+        <nav className="flex-1 px-4 space-y-1">
+          <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-4 mb-3">เมนูหลัก</div>
+          {[
+            { name: 'หน้าหลัก', icon: LayoutDashboard },
+            { name: 'งานของฉัน', icon: ClipboardList },
+            { name: 'ตารางงาน', icon: Calendar },
+            { name: 'ทีมของฉัน', icon: Users },
+          ].map((item) => (
+            <button
+              key={item.name}
+              onClick={() => setActiveTab(item.name)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                activeTab === item.name 
+                ? 'bg-blue-600/10 text-blue-400 shadow-[inset_0_0_0_1px_rgba(59,130,246,0.2)]' 
+                : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+              }`}
+            >
+              <item.icon size={18} />
+              <span className="text-[14px] font-medium">{item.name}</span>
+            </button>
+          ))}
+
+          <div className="pt-8 text-[11px] font-semibold text-slate-500 uppercase tracking-wider px-4 mb-3">บัญชี</div>
+          {[
+            { name: 'โปรไฟล์', icon: User },
+            { name: 'การแจ้งเตือน', icon: Bell },
+          ].map((item) => (
+            <button key={item.name} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-all">
+              <item.icon size={18} />
+              <span className="text-[14px] font-medium">{item.name}</span>
+            </button>
+          ))}
+        </nav>
+
+        <div className="p-4 mt-auto">
+          <div className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 p-4 rounded-2xl border border-white/5">
+            <p className="text-xs text-blue-300 font-medium mb-1">ต้องการความช่วยเหลือ?</p>
+            <p className="text-[11px] text-slate-400 leading-relaxed">ติดต่อฝ่าย IT หรือ HR ได้ผ่านระบบ Ticket</p>
+          </div>
+        </div>
+      </aside>
+
+      {/* MAIN CONTENT */}
+      <main className="flex-1 flex flex-col max-h-screen overflow-y-auto">
+        {/* TOPBAR */}
+        <header className="h-20 border-bottom border-white/5 px-8 flex items-center justify-between sticky top-0 bg-[#0F1117]/80 backdrop-blur-md z-10">
+          <div>
+            <h1 className="text-xl font-semibold text-white">สวัสดี, อรพรรณ</h1>
+            <p className="text-sm text-slate-500 capitalize">พฤหัสบดีที่ 1 พฤษภาคม 2568</p>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button className="p-2 text-slate-400 hover:text-white transition-colors relative">
+              <Bell size={20} />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-[#0F1117]"></span>
+            </button>
+            <div className="h-8 w-[1px] bg-white/10 mx-2"></div>
+            <div className="flex items-center gap-3">
+              <div className="text-right">
+                <p className="text-sm font-medium text-white">อรพรรณ ส.</p>
+                <p className="text-[11px] text-emerald-500 font-medium bg-emerald-500/10 px-2 py-0.5 rounded-full">Employee</p>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-sm font-bold text-white shadow-lg">
+                อส
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div className="p-8 max-w-6xl mx-auto w-full space-y-6">
+          {/* CHECK-IN CARD */}
+          <section className="bg-[#161B26] border border-white/5 rounded-3xl p-6 flex items-center justify-between shadow-xl shadow-black/20">
+            <div className="flex items-center gap-5">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                <Clock size={24} />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className={`w-2 h-2 rounded-full ${isCheckedIn ? 'bg-emerald-500 animate-pulse' : 'bg-slate-600'}`}></span>
+                  <h3 className="font-semibold text-lg text-white">{isCheckedIn ? 'เข้างานแล้ว' : 'ยังไม่ได้เข้างาน'}</h3>
+                </div>
+                <p className="text-sm text-slate-400">
+                  {isCheckedIn ? 'Check-in 08:53 น. • ทำงานมาแล้ว 3 ชั่วโมง 21 นาที' : 'กรุณากดเพื่อเข้างาน'}
+                </p>
+              </div>
+            </div>
+            <button 
+              onClick={() => setIsCheckedIn(!isCheckedIn)}
+              className={`px-8 py-3 font-semibold rounded-2xl border border-white/5 transition-all active:scale-95 ${
+                isCheckedIn 
+                ? 'bg-[#1F2533] hover:bg-rose-500/10 hover:text-rose-400 hover:border-rose-500/20 text-white' 
+                : 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/20'
+              }`}
+            >
+              {isCheckedIn ? 'Check-out' : 'Check-in'}
+            </button>
+          </section>
+
+          {/* TWO COLUMNS LAYOUT */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* TASKS COLUMN */}
+            <div className="lg:col-span-2 bg-[#161B26] border border-white/5 rounded-3xl overflow-hidden flex flex-col shadow-xl">
+              <div className="p-6 border-b border-white/5 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-lg font-bold text-white">งานของฉัน</h2>
+                  <span className="bg-blue-600/20 text-blue-400 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                    {tasks.filter(t => t.status !== 'done').length} งานคงค้าง
+                  </span>
+                </div>
+                <button className="text-sm text-blue-400 hover:text-blue-300 font-medium transition-colors">ดูทั้งหมด</button>
+              </div>
+              
+              <div className="flex-1 divide-y divide-white/5">
+                {tasks.map((task) => (
+                  <div 
+                    key={task.id} 
+                    onClick={() => toggleTask(task.id)}
+                    className={`p-5 transition-all cursor-pointer group flex items-start gap-4 select-none ${
+                      task.status === 'done' ? 'bg-white/[0.01]' : 'hover:bg-white/[0.02]'
+                    }`}
+                  >
+                    <div className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
+                      task.status === 'done' 
+                      ? 'bg-emerald-500 border-emerald-500' 
+                      : 'border-slate-700 group-hover:border-blue-500'
+                    }`}>
+                      {task.status === 'done' ? (
+                        <CheckCircle2 size={14} className="text-white" />
+                      ) : (
+                        <Circle size={14} className="text-slate-700 group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      )}
+                    </div>
+                    
+                    <div className="flex-1">
+                      <h4 className={`font-semibold text-sm mb-2 transition-all duration-300 ${
+                        task.status === 'done' 
+                        ? 'text-slate-500 line-through' 
+                        : 'text-slate-200 group-hover:text-white'
+                      }`}>
+                        {task.name}
+                      </h4>
+                      
+                      <div className="flex flex-wrap gap-2">
+                        <span className={`text-[10px] px-2 py-1 rounded-md font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors ${
+                          task.status === 'done' 
+                          ? 'bg-slate-800/50 text-slate-600'
+                          : task.status === 'overdue' 
+                            ? 'bg-rose-500/10 text-rose-400' 
+                            : 'bg-slate-800 text-slate-400'
+                        }`}>
+                          <Calendar size={10} /> {task.due}
+                        </span>
+                        
+                        <span className={`text-[10px] px-2 py-1 rounded-md font-bold uppercase tracking-wider transition-colors ${
+                          task.status === 'done' 
+                          ? 'bg-emerald-500/10 text-emerald-500' 
+                          : 'bg-blue-500/10 text-blue-400'
+                        }`}>
+                          {task.status === 'done' ? 'เสร็จสิ้น' : 'กำลังทำ'}
+                        </span>
+                        
+                        <span className="text-[10px] px-2 py-1 rounded-md font-bold uppercase tracking-wider bg-white/5 text-slate-500">
+                          {task.priority}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className={`p-2 transition-colors ${task.status === 'done' ? 'text-emerald-500' : 'text-slate-600 group-hover:text-slate-400'}`}>
+                      {task.status === 'done' ? <CheckCircle2 size={18} /> : <ChevronDown size={18} />}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="p-4 bg-white/[0.01] border-t border-white/5 text-center">
+                <button className="w-full py-2 text-sm text-slate-500 hover:text-slate-300 font-medium transition-colors">
+                  โหลดเพิ่มเติม...
+                </button>
+              </div>
+            </div>
+
+            {/* SIDE COLUMN */}
+            <div className="space-y-6">
+              {/* CALENDAR MINI */}
+              <div className="bg-[#161B26] border border-white/5 rounded-3xl p-6">
+                <h2 className="text-sm font-bold text-white mb-4">สัปดาห์นี้</h2>
+                <div className="grid grid-cols-5 gap-2 text-center">
+                  {['จ', 'อ', 'พ', 'พฤ', 'ศ'].map((day, idx) => (
+                    <div key={day} className={`p-2 rounded-2xl transition-all ${idx === 3 ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 ring-2 ring-blue-600/20' : 'hover:bg-white/5 text-slate-400'}`}>
+                      <p className="text-[10px] font-bold mb-1">{day}</p>
+                      <p className="text-sm font-bold">{28 + idx}</p>
+                      <div className="flex justify-center gap-0.5 mt-1">
+                        <div className={`w-1 h-1 rounded-full ${idx === 3 ? 'bg-white' : 'bg-emerald-500'}`}></div>
+                        <div className={`w-1 h-1 rounded-full ${idx === 3 ? 'bg-white' : 'bg-blue-500'}`}></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* TEAM CARD */}
+              <div className="bg-[#161B26] border border-white/5 rounded-3xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-sm font-bold text-white">ทีมของฉัน</h2>
+                  <span className="text-[10px] text-emerald-400 font-bold bg-emerald-400/10 px-2 py-0.5 rounded-full">3 Online</span>
+                </div>
+                <div className="space-y-4">
+                  {teammates.map((member) => (
+                    <div key={member.id} className="flex items-center gap-3">
+                      <div className="relative">
+                        <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-xs font-bold text-slate-300">
+                          {member.initial}
+                        </div>
+                        {member.online && <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-[#161B26] rounded-full"></div>}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold text-slate-200">{member.name}</p>
+                        <p className="text-[10px] text-slate-500">{member.role}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ALERT NOTICE */}
+              <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-4 flex gap-3">
+                <AlertCircle size={18} className="text-amber-500 shrink-0" />
+                <div>
+                  <p className="text-xs font-bold text-amber-500 mb-1">แจ้งเตือนจาก Head</p>
+                  <p className="text-[11px] text-amber-200/60 leading-relaxed">กรุณาสรุปผลการเขียน Unit Test ภายในเย็นวันนี้ เพื่อเตรียม Deploy สัปดาห์หน้า</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default App;
