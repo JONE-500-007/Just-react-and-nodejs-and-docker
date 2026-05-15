@@ -1,45 +1,68 @@
-import React, { useState } from "react";
+// ============================================================
+//  TaskItem.jsx
+//  Single task row. Clicking toggles done ↔ in-progress.
+//
+//  Props:
+//    task      { id, name, due, status, priority }
+//    onToggle  (id: number) => void
+//
+//  Status values:  'done' | 'prog' | 'overdue'
+//  Priority values: 'สำคัญ' | 'ปานกลาง' | 'ทั่วไป'
+// ============================================================
 
-export default function TaskItem({ task }) {
-  // สร้าง State ภายในเพื่อรองรับการกด Toggle
-  const [isDone, setIsDone] = useState(task.status === "done");
+import React from 'react';
 
-  const toggle = () => {
-    setIsDone(!isDone);
-    // ที่นี่คุณสามารถเพิ่มการเรียก API ไปยัง Node.js เพื่ออัปเดต DB ได้
+// ── Helpers ──────────────────────────────────────────────────
+
+function StatusTag({ status }) {
+  const map = {
+    done:    { cls: 'tag-done', label: 'เสร็จสิ้น' },
+    overdue: { cls: 'tag-over', label: 'เกินกำหนด' },
+    prog:    { cls: 'tag-prog', label: 'กำลังทำ'   },
+  };
+  const { cls, label } = map[status] ?? map.prog;
+  return <span className={`tag ${cls}`}>{label}</span>;
+}
+
+function PriorityTag({ priority }) {
+  if (!priority || priority === 'ทั่วไป') return null;
+  const cls = priority === 'สำคัญ' ? 'tag-pri-hi' : 'tag-pri-mid';
+  return <span className={`tag ${cls}`}>{priority}</span>;
+}
+
+// ── Component ─────────────────────────────────────────────────
+
+export default function TaskItem({ task, onToggle }) {
+  const isDone = task.status === 'done';
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onToggle(task.id);
+    }
   };
 
   return (
-    <div className="task-row" onClick={toggle}>
-      {/* ส่วนของวงกลม Checkbox */}
-      <div className={`tcheck ${isDone ? 'done' : ''}`}>
-        {isDone && (
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        )}
+    <div
+      className="task-item"
+      onClick={() => onToggle(task.id)}
+      onKeyDown={handleKeyDown}
+      role="checkbox"
+      aria-checked={isDone}
+      tabIndex={0}
+    >
+      {/* Checkbox */}
+      <div className={`task-check ${isDone ? 'done' : ''}`} aria-hidden="true">
+        {isDone && <i className="ti ti-check"></i>}
       </div>
 
-      <div className="tinfo">
-        {/* ชื่อดีไซน์จะถูกขีดฆ่าถ้าเสร็จแล้ว */}
-        <div className={`tname ${isDone ? "done" : ""}`}>
-          {task.name}
-        </div>
-
-        <div className="tmeta">
-          <span className="ttag" style={{background: 'rgba(255,255,255,0.05)', color: '#94A3B8'}}>
-            ส่ง {task.due}
-          </span>
-
-          <span className={`ttag ${isDone ? "done" : "prog"}`}>
-            {isDone ? "เสร็จสิ้น" : "กำลังทำ"}
-          </span>
-          
-          {task.priority && (
-             <span className="ttag" style={{background: 'rgba(244, 63, 94, 0.1)', color: '#F43F5E'}}>
-              {task.priority}
-            </span>
-          )}
+      {/* Info */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div className={`task-name ${isDone ? 'done' : ''}`}>{task.name}</div>
+        <div className="task-meta">
+          <span className="tag tag-due">ส่ง {task.due}</span>
+          <StatusTag status={task.status} />
+          <PriorityTag priority={task.priority} />
         </div>
       </div>
     </div>

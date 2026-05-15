@@ -1,42 +1,48 @@
+// ============================================================
+//  Sidebar.jsx
+//  Desktop sidebar — hidden on mobile (see dashboard.css).
+//  A <BottomNav> component handles mobile navigation instead.
+//
+//  Props:
+//    navItems   { name: string, icon: string }[]  — nav entries
+//    activeTab  string                            — current active page
+//    onSelect   (name: string) => void            — tab change handler
+// ============================================================
+
 import React from 'react';
 
-export default function Sidebar() {
+export default function Sidebar({ navItems = [], activeTab, onSelect }) {
   return (
-    <div className="sidebar">
+    <aside className="sidebar">
+      {/* Brand */}
       <div className="brand">
         <div className="brand-name">WorkSpace</div>
-        <div className="brand-role">Management Portal</div>
+        <span className="brand-tag">Employee Portal</span>
       </div>
 
+      {/* Primary navigation */}
       <div className="nav-section">
         <div className="nav-label">เมนูหลัก</div>
-
-        <div className="nav-item active">
-          <div className="nav-dot blue"></div>
-          หน้าหลัก
-        </div>
-
-        <div className="nav-item">
-          <div className="nav-dot green"></div>
-          งานของฉัน
-        </div>
-
-        <div className="nav-item">
-          <div className="nav-dot amber"></div>
-          ตารางงาน
-        </div>
-
-        <div className="nav-item">
-          <div className="nav-dot purple"></div>
-          ทีมของฉัน
-        </div>
+        {navItems.map(item => (
+          <button
+            key={item.name}
+            className={`nav-btn ${activeTab === item.name ? 'active' : ''}`}
+            onClick={() => onSelect(item.name)}
+            aria-current={activeTab === item.name ? 'page' : undefined}
+          >
+            <i className={`ti ti-${item.icon}`} aria-hidden="true"></i>
+            {item.name}
+          </button>
+        ))}
       </div>
-      
-      <div className="nav-section" style={{marginTop: 'auto'}}>
-        <div className="nav-label">บัญชี</div>
-        <div className="nav-item">โปรไฟล์</div>
-        <div className="nav-item">ออกจากระบบ</div>
+
+      {/* Footer */}
+      <div className="nav-footer">
+        <button className="logout-btn" onClick={() => console.log('logout')}>
+          <i className="ti ti-logout" aria-hidden="true"></i>
+          ออกจากระบบ
+        </button>
       </div>
-    </div>
+    </aside>
   );
 }

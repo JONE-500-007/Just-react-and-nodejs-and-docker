@@ -1,5 +1,6 @@
 import React from 'react';
-import EmployeeDashboard from "./pages/EmployeeDashboard";
+import EmployeeDashboard from "./pages/HeadDashboard";
+//import EmployeeDashboard from "./pages/EmployeeDashboard";
 
 function App() {
   return (

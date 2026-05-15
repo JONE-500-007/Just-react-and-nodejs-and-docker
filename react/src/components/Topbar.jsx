@@ -1,27 +1,69 @@
+// ============================================================
+//  Topbar.jsx
+//  Renders two topbars:
+//    - .topbar         → desktop (hidden on mobile via CSS)
+//    - .mobile-topbar  → mobile  (hidden on desktop via CSS)
+//
+//  Props:
+//    name            string  — user display name (default "User")
+//    role            string  — user role title   (default "Employee")
+//    notifCount      number  — badge count        (default 0)
+// ============================================================
+
 import React from 'react';
 
-export default function Topbar({ name = "User", role = "Employee" }) {
-  const today = new Date().toLocaleDateString("th-TH", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+export default function Topbar({ name = 'User', role = 'Employee', notifCount = 0 }) {
+  const initials = name.substring(0, 2);
 
   return (
-    <div className="topbar">
-      <div>
-        <div className="topbar-title">สวัสดี, {name}</div>
-        <div className="topbar-sub">{today}</div>
-      </div>
+    <>
+      {/* ── DESKTOP TOPBAR ── */}
+      <header className="topbar">
+        {/* Search */}
+        <div className="search-wrap">
+          <i className="ti ti-search" aria-hidden="true"></i>
+          <input
+            className="search-input"
+            type="text"
+            placeholder="ค้นหางาน, เพื่อนร่วมงาน..."
+            aria-label="ค้นหา"
+          />
+        </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-        <span className="badge-emp">{role}</span>
-        <div className="h-8 w-[1px] bg-white/10 mx-2"></div>
-        <div className="av">
-          {name.substring(0, 2)}
+        {/* Right cluster */}
+        <div className="topbar-right">
+          <button className="notif-btn" aria-label={`การแจ้งเตือน ${notifCount} รายการ`}>
+            <i className="ti ti-bell" aria-hidden="true"></i>
+            {notifCount > 0 && <span className="badge">{notifCount}</span>}
+          </button>
+
+          <div className="avatar-wrap">
+            <div className="avatar-info">
+              <div className="avatar-name">{name}</div>
+              <div className="avatar-role">{role}</div>
+            </div>
+            <div className="avatar-circle" aria-hidden="true">{initials}</div>
+          </div>
+        </div>
+      </header>
+
+      {/* ── MOBILE TOPBAR ── */}
+      <div className="mobile-topbar">
+        <span className="mob-brand">WorkSpace</span>
+        <div className="mob-right">
+          <button className="notif-btn" aria-label={`การแจ้งเตือน ${notifCount} รายการ`}>
+            <i className="ti ti-bell" aria-hidden="true"></i>
+            {notifCount > 0 && <span className="badge">{notifCount}</span>}
+          </button>
+          <div
+            className="avatar-circle"
+            style={{ width: 32, height: 32, fontSize: 11, borderRadius: 9 }}
+            aria-hidden="true"
+          >
+            {initials}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
