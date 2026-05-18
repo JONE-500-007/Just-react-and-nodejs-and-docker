@@ -11,7 +11,7 @@
 
 import React from 'react';
 
-export default function BottomNav({ navItems = [], activeTab, onSelect }) {
+export default function BottomNav({ navItems = [], activeTab, onSelect, onLogout }) {
   return (
     <nav className="bottom-nav" aria-label="เมนูหลัก">
       <div className="bottom-nav-inner">
@@ -27,6 +27,10 @@ export default function BottomNav({ navItems = [], activeTab, onSelect }) {
             {item.name === 'ตารางงาน' ? 'ตาราง' : item.name}
           </button>
         ))}
+        <button className="bnav-btn" onClick={onLogout}>
+          <i className="ti ti-logout" aria-hidden="true"></i>
+          ออกจากระบบ
+        </button>
       </div>
     </nav>
   );

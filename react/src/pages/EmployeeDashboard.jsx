@@ -27,6 +27,7 @@ import CheckinCard from "../components/CheckinCard";
 import TaskItem    from "../components/TaskItem";
 
 import { useDashboard, NAV_ITEMS } from "../hooks/useDashboard";
+import { useAuth } from '../context/AuthContext';
 
 import "../styles/dashboard.css";
 
@@ -80,6 +81,7 @@ function formatThaiDate() {
 // ── Main component ────────────────────────────────────────────
 
 export default function EmployeeDashboard() {
+  const { logout } = useAuth(); 
   const {
     tasks, team,
     activeTab, setActiveTab,
@@ -113,7 +115,7 @@ export default function EmployeeDashboard() {
   return (
     <div className="shell">
       {/* Sidebar — desktop */}
-      <Sidebar navItems={NAV_ITEMS} activeTab={activeTab} onSelect={setActiveTab} />
+      <Sidebar navItems={NAV_ITEMS} activeTab={activeTab} onSelect={setActiveTab} onLogout={logout} />
 
       {/* Main */}
       <main className="main">
@@ -210,7 +212,7 @@ export default function EmployeeDashboard() {
       </main>
 
       {/* Bottom nav — mobile */}
-      <BottomNav navItems={NAV_ITEMS} activeTab={activeTab} onSelect={setActiveTab} />
+      <BottomNav navItems={NAV_ITEMS} activeTab={activeTab} onSelect={setActiveTab} onLogout={logout} />
     </div>
   );
 }

@@ -11,7 +11,7 @@
 
 import React from 'react';
 
-export default function Sidebar({ navItems = [], activeTab, onSelect }) {
+export default function Sidebar({ navItems = [], activeTab, onSelect, onLogout }) {
   return (
     <aside className="sidebar">
       {/* Brand */}
@@ -38,11 +38,12 @@ export default function Sidebar({ navItems = [], activeTab, onSelect }) {
 
       {/* Footer */}
       <div className="nav-footer">
-        <button className="logout-btn" onClick={() => console.log('logout')}>
+        <button className="logout-btn" onClick={onLogout}>
           <i className="ti ti-logout" aria-hidden="true"></i>
           ออกจากระบบ
         </button>
       </div>
     </aside>
+    
   );
 }

@@ -23,6 +23,7 @@ import { useHeadDashboard, HEAD_NAV_ITEMS, HEAD_BOTTOM_NAV } from '../hooks/useH
 import TeamRow           from '../components/TeamRow';
 import ProjectHealthCard from '../components/ProjectHealthCard';
 import '../styles/head-dashboard.css';
+import { useAuth } from '../context/AuthContext';
 
 // ── Icon map for activity log ─────────────────────────────────
 const ACTIVITY_ICON = {
@@ -89,6 +90,7 @@ function ActivityLog({ activity }) {
 // ── Root component ────────────────────────────────────────────
 
 export default function HeadDashboard() {
+  const { logout } = useAuth();
   const {
     team, activity, metrics,
     activeTab, setActiveTab,
@@ -159,7 +161,7 @@ export default function HeadDashboard() {
               <div className="h-prole">Project Manager</div>
             </div>
           </div>
-          <button className="h-logout" onClick={() => console.log('logout')}>
+          <button className="h-logout" onClick={logout}>
             <i className="ti ti-logout" aria-hidden="true"></i>
             ออกจากระบบ
           </button>
